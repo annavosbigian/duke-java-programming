@@ -1,0 +1,111 @@
+
+/**
+ * Write a description of FindingMultipleOccurences here.
+ * 
+ * @author (your name) 
+ * @version (a version number or a date)
+ */
+public class FindingMultipleOccurences {
+    public int findStopCodon(String dna, int startIndex, String stopCodon){
+        int currIndex = dna.indexOf(stopCodon, startIndex+3);
+        while (currIndex != -1) {
+            //check if (currIndex = startIndex) % 3
+            if((currIndex - startIndex) % 3 == 0) {
+                //if so, the currIndex is your answer
+                return currIndex;
+            }
+            //if not, update currIndex to the index of the next stopCodon starting from (currIndex+1)
+            else {
+                currIndex = dna.indexOf(stopCodon, currIndex +1);
+        }
+    }  
+    return dna.length();
+    }
+    public String findGene(String dna, int where) {
+        int startIndex = dna.indexOf("ATG", where);
+        if(startIndex == -1){
+            return "";
+        }
+        int taaIndex = findStopCodon(dna, startIndex, "TAA");
+        int tagIndex = findStopCodon(dna, startIndex, "TAG");
+        int tgaIndex = findStopCodon(dna, startIndex, "TGA");
+        //int minPt1 = Math.min(taaIndex, tagIndex);
+        //int minIndex = Math.min(minPt1, tgaIndex);
+        int minIndex = 0;
+        if(taaIndex == -1 || tgaIndex != -1 && tgaIndex < taaIndex) {
+            minIndex = tgaIndex;
+        }
+        else{
+            minIndex = taaIndex;
+        }
+        if(minIndex == -1 || tagIndex != -1 && tagIndex < minIndex) {
+            minIndex = tagIndex;
+        }
+        if (minIndex == -1){
+            return "";
+        }
+        //if (minIndex == dna.length()){
+          //  return "";
+        //}
+        return dna.substring(startIndex,minIndex + 3);   
+    }
+    public void printAllGenes(String dna) {
+        int startIndex = 0;
+        //as long as there are more genes after startIndex
+        while (true) { 
+            //find next gene
+            String gene = findGene(dna, startIndex);
+            if(gene.isEmpty()) {
+                break;
+            }
+            //print that gene
+            System.out.println(gene);
+            //set startIndex to just past the end of the gene
+            startIndex = dna.indexOf(gene, startIndex) + gene.length();
+            //go back to 2
+        }
+    }
+    public int countGenes(String dna, int startIndex) {
+       int count = 0;
+       startIndex = 0;
+        //as long as there are more genes after startIndex
+        while (true) { 
+            //find next gene
+            String gene = findGene(dna, startIndex);
+            if(gene.isEmpty()) {
+                break;
+            }
+            //add gene to count
+            count++;
+            //go back to true
+            startIndex = dna.indexOf(gene, startIndex) + gene.length();
+        } 
+       return count;
+    }
+    public void testFindStopCodon(){
+        String dna = "xxxATGxxxbbTAAhTAGfdfsdfds";
+        int dex = findStopCodon(dna, 0, "TAA");
+        System.out.println(dex);
+        
+        dna = "xxxATGxxxbbTAAhTAGfdfsdfds";
+        dex = findStopCodon(dna, 0, "TAG");
+        System.out.println(dex);
+    }
+    public void testFindGene(){
+        String dna = "xxxATGxxxbbTAAhTAGfdfsdfds";
+        String gene = findGene(dna, 0);
+        if (! gene.equals("ATGxxxbbTAAhTAG")){
+            System.out.println("error");
+        }
+        System.out.println(gene);
+    }
+    public void testPrintAll() {
+         String dna = "xxxATGxxxbbTAAhTAGfdfsdfds";
+         int genes = countGenes(dna, 0);
+         System.out.println(genes);
+         
+         dna = "xxxATGxxxTAAATGhTAGsdsssdddfffTAAfdfsdfds";
+         genes = countGenes(dna, 0);
+         System.out.println(genes);
+        }
+}
