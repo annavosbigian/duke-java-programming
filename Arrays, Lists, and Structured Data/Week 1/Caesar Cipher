@@ -1,0 +1,72 @@
+import edu.duke.*;
+import java.io.*;
+/**
+ * Write a description of CaesarCipher here.
+ * 
+ * @author (your name) 
+ * @version (a version number or a date)
+ */
+public class CaesarCipher {
+    public String caesar(String s, int key) {
+        StringBuilder encrypt = new StringBuilder(s);
+        for(int i = 0; i < encrypt.length(); i++) {
+            char currChar = encrypt.charAt(i);
+            if (Character.isLetter(currChar)){
+                char newChar = encodeChar(currChar, key);
+                encrypt.setCharAt(i, newChar);
+            }
+        }
+        return encrypt.toString();
+    }
+    public char encodeChar(char currChar, int key){
+        String uppercase = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        String lowercase = "abcdefghijklmnopqrstuvwxyz";
+        String shiftedUpper = uppercase.substring(key) + uppercase.substring(0, key);
+        String shiftedLower = lowercase.substring(key) + lowercase.substring(0,key); 
+        char newChar = currChar;
+        if (Character.isLowerCase(currChar)){
+                        int idx = lowercase.indexOf(currChar);
+                        if (idx !=-1) {
+                             newChar = shiftedLower.charAt(idx);
+                        }
+                    }
+        else if(Character.isUpperCase(currChar)){
+                    int idx = uppercase.indexOf(currChar);
+                    if (idx !=-1) {
+                        newChar = shiftedUpper.charAt(idx);
+                    }
+            }
+       return newChar;
+    }
+    public void testCaesar() {
+        String encrypted = caesar("Hello World", 1);
+        System.out.println(encrypted);
+    }
+    public String encryptTwoKeys(String input, int key1, int key2){
+    //key 1 encrypts every other char, starting with 1
+    //key 2 encrypts every other starting with the second
+    StringBuilder encrypt = new StringBuilder(input);
+    for (int i = 0; i < input.length(); i+=2){
+        char currChar = encrypt.charAt(i);
+        if (Character.isLetter(currChar)){
+        char newChar = encodeChar(currChar, key1);
+        encrypt.setCharAt(i, newChar);
+        }
+    }
+    for (int i = 1; i < input.length(); i+=2){
+        char currChar = encrypt.charAt(i);
+        if (Character.isLetter(currChar)){
+        char newChar = encodeChar(currChar, key2);
+        encrypt.setCharAt(i, newChar);
+        }
+    }
+    return encrypt.toString();
+    }
+    public void testEncryptTwoKeys(){
+    String input = "Guten Tag, Welt!";
+    int key1 = 1;
+    int key2 = 25;
+    System.out.println(encryptTwoKeys(input, key1, key2));
+    }
+}
+
