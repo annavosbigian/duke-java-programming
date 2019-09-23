@@ -8,27 +8,6 @@ import java.io.*;
  * @version (a version number or a date)
  */
 public class BabyNamesNotes {
-    //Access CSVRecord data by index: 0-based
-    //public void readOneFile(int year) {
-      //  String fname = "data/yob" + year + ."txt";
-      //  FileResource fr = new fileResource(fname);
-      //  CSVParser parser = fr.getSCVParser(false); //no header row
-      //  for (CSVRecord rec : parser) {
-      //      String name = rec.get(0); //indexing since there's no header
-      //      String gender = rec.get(1);
-      //  }
-    //}
-    public void printNames() {
-        FileResource fr = new FileResource();
-        for (CSVRecord rec : fr.getCSVParser(false)) {
-            int numBorn = Integer.parseInt(rec.get(2));
-            if (numBorn <= 100) {
-            System.out.println("Name " + rec.get(0) + 
-                                "Gender " + rec.get(1) +
-                                "Num Born "+ rec.get(2)); //number with name
-            }
-            }
-    }
     public void totalBirths (FileResource fr) {
         int totalBirths = 0;
         int totalBoys = 0;
