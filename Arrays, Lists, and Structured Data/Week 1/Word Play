@@ -1,0 +1,59 @@
+import edu.duke.*;
+import java.io.*;
+/**
+ * Write a description of WordPlay here.
+ * 
+ * @author (your name) 
+ * @version (a version number or a date)
+ */
+public class WordPlay {
+    public boolean isVowel(char ch){
+        //true if char is vowel
+        //false if not
+        String vowels = "aeiouAEIOU";
+        if (vowels.indexOf(ch) != -1) return true;
+        else return false;
+    }
+    public void testIsVowel(){
+    System.out.println(isVowel('f'));
+    }
+    public String replaceVowels(String phrase, char ch){
+     //return String phrase with all vowels replaced by ch
+     StringBuilder noVowels = new StringBuilder(phrase);
+     for (int i = 0; i < phrase.length(); i++){
+         char currChar = phrase.charAt(i);
+         if (isVowel(currChar)){
+             noVowels.setCharAt(i, ch);
+            }
+        }
+     return noVowels.toString();
+    }
+    public void testReplaceVowels(){
+    String phrase = "Hello World!";
+    char ch = '*';
+    System.out.println(replaceVowels(phrase,ch));
+    }
+    public String emphasize(String phrase, char ch){
+    //replace ch with * at odd # locations
+    //replace ch ith + at even # locations
+    StringBuilder sb = new StringBuilder(phrase);
+    String odd = "13579";
+    for (int i = 0; i < sb.length(); i++){
+        char currentChar = sb.charAt(i);
+        if (currentChar == ch) {
+            if ((i+1)%2 == 0){
+                sb.setCharAt(i, '+');
+            }
+            else {
+                sb.setCharAt(i, '*');
+            }
+        }
+    }
+    return sb.toString();
+    }
+    public void testEmphasize(){
+    String phrase = "Hello out there!";
+    char ch = 'e';
+    System.out.println(emphasize(phrase,ch));
+    }
+}
