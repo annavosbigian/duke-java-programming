@@ -1,0 +1,38 @@
+import edu.duke.*;
+import java.io.*;
+/**
+ * Write a description of Grayscale here.
+ * 
+ * @author (your name) 
+ * @version (a version number or a date)
+ */
+public class ImageInversion {
+    public ImageResource makeInverted(ImageResource inImage) {
+        ImageResource outImage = new ImageResource(inImage.getWidth(), inImage.getHeight());
+        for (Pixel pixel: outImage.pixels()) {
+            Pixel inPixel = inImage.getPixel(pixel.getX(), pixel.getY());
+            //swap pixels
+            pixel.setRed(255-inPixel.getRed());
+            pixel.setBlue(255-inPixel.getBlue());
+            pixel.setGreen(255-inPixel.getGreen());
+        }
+        return outImage;
+    }
+    public void testInverted() {
+        ImageResource ir = new ImageResource();
+        ImageResource inverted = makeInverted(ir);
+        inverted.draw();
+    }
+    public void selectAndConvert(){
+        DirectoryResource dr = new DirectoryResource();
+        for (File f : dr.selectedFiles()) {
+            ImageResource inImage = new ImageResource(f);
+            String fName = inImage.getFileName();
+            ImageResource invertedImage = makeInverted(inImage);
+            invertedImage.draw();
+            invertedImage.setFileName("inverted-" + fName);
+            invertedImage.save();
+            System.out.println("inverted-" + fName + " saved");
+        }
+    }
+}
