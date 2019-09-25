@@ -1,0 +1,68 @@
+
+/**
+ * Write a description of TestCaesarCipherTwo here.
+ * 
+ * @author (your name) 
+ * @version (a version number or a date)
+ */
+public class TestCaesarCipherTwo {
+    public int maxIndex(int[] values){
+        int maxDex = 0;
+        for (int i=0; i < values.length; i++) {
+            if(values[i] > values[maxDex]){
+                maxDex = i;
+        }
+        }
+        return maxDex;
+    }
+    public int[] countLetters(String encrypted){
+        String alph = "abcdefghijklmnopqrstuvwxyz";
+        int[] counts = new int[26];
+        for (int i=0; i < encrypted.length(); i++){
+            char ch = Character.toLowerCase(encrypted.charAt(i));
+            int dex = alph.indexOf(ch);
+            if (dex != -1){
+                counts[dex] ++;
+                {
+        }
+    }
+    }
+    return counts;
+    }
+    public String halfOfString(String message, int start){
+        StringBuilder everyOther = new StringBuilder();
+        for (int i = start; i < message.length(); i+=2){
+            char ch = message.charAt(i);
+            everyOther.append(ch);
+        }
+        return everyOther.toString();
+    }
+    public void simpleTests(){
+    CaesarCipherTwo cc2 = new CaesarCipherTwo(17,3);
+    String test = "We the People of the United States, in Order to form a more perfect Union, establish Justice";
+    String encrypted = cc2.encrypt(test);
+    System.out.println(encrypted);
+    String decrypted = cc2.decrypt(encrypted);
+    System.out.println(decrypted);
+    String decoded = breakCaesarCipher(encrypted);
+    System.out.println(decoded);
+    }
+    public String breakCaesarCipher(String input){
+        String firstHalf = halfOfString(input, 0);
+        String secondHalf = halfOfString(input, 1);
+        int[] freqs1 = countLetters(firstHalf);
+        int maxDex1 = maxIndex(freqs1);
+        int dkey1 = maxDex1 -4;
+        if (maxDex1 < 4) {
+            dkey1 = 26 - (4-maxDex1);
+        }
+        int[] freqs2 = countLetters(secondHalf);
+        int maxDex2 = maxIndex(freqs2);
+        int dkey2 = maxDex2 -4;
+        if (maxDex2 < 4) {
+            dkey2 = 26 - (4-maxDex2);
+        }        
+        CaesarCipherTwo cc = new CaesarCipherTwo(26-dkey1, 26-dkey2);
+        return cc.encrypt(input);   
+    }
+}
