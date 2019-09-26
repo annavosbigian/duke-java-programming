@@ -1,0 +1,56 @@
+import edu.duke.*;
+import java.util.*;
+/**
+ * Write a description of CodonCount here.
+ * 
+ * @author (your name) 
+ * @version (a version number or a date)
+ */
+public class CodonCount {
+    private HashMap<String, Integer> DNAMap;
+    public CodonCount(){
+        DNAMap = new HashMap<String,Integer>();
+    }
+    public void buildCodonMap(int start, String dna){
+        //build new map of codons mapped to their counts from dna
+        //start position is 0, 1, or 2
+        DNAMap.clear();
+        for (int i = start; i<(dna.length()-2); i += 3){
+            int newStart = i + 3;
+            String codon = dna.substring(i, newStart);
+            if (DNAMap.keySet().contains(codon)){
+                DNAMap.put(codon, DNAMap.get(codon) + 1);
+            }
+            else{
+                DNAMap.put(codon, 1);
+            }
+        }
+    }
+    public String getMostCommonCodon(){
+        //for after the HashMap has been built
+        //codon in a reading frame that has the largest count   
+        String common = "";
+        int highest = 0;
+        for (String s : DNAMap.keySet()){
+            if (DNAMap.get(s) > highest){
+                highest = DNAMap.get(s);
+                common = s;
+            }
+        }
+        return common;
+    }
+    public void printCodonCounts(int start, int end){
+        for (String s : DNAMap.keySet()){
+            if (DNAMap.get(s) >= start && DNAMap.get(s) <= end){
+        //print all codons in HashMap with counts between start& end   
+            System.out.println(s + "\t" + DNAMap.get(s));
+    }
+    }
+    }
+    public void tester(){
+        String dna = "CGTTCAAGTTCAA";
+        buildCodonMap(2, dna);
+        System.out.println(getMostCommonCodon());
+        printCodonCounts(1, 5);
+    }
+}
