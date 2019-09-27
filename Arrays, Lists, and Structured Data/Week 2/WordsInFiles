@@ -1,0 +1,83 @@
+import edu.duke.*;
+import java.io.*;
+import java.util.*;
+
+/**
+ * Write a description of WordsInFiles here.
+ * 
+ * @author (your name) 
+ * @version (a version number or a date)
+ */
+public class WordsInFiles {
+    private HashMap<String, ArrayList<String>> map;
+    public WordsInFiles(){
+        map = new HashMap<String, ArrayList<String>>();
+    }
+    private void addWordsFromFile(File f){
+        FileResource fr = new FileResource(f);
+        String filename = f.getName();
+        for(String word : fr.words()){
+            if(map.keySet().contains(word)){
+                ArrayList<String> array = map.get(word);
+                if (!array.contains(filename)){
+                array.add(filename);
+                map.put(word, array);
+            }
+            }
+            else{
+                ArrayList<String> array = new ArrayList<String>(Arrays.asList(filename));
+                map.put(word, array);
+            }
+            //if (map.containsKey(word)){
+        //add all words from file to map
+            //if (!map.get(word).contains(filename)){             
+            //    map.put(word, map.get(word).add(filename));
+
+        //if Words not in map, create new array
+        //use getName to get filename
+    }
+    }
+    public void buildWordFileMap(){
+        map.clear();
+        DirectoryResource dr = new DirectoryResource();
+        for (File f : dr.selectedFiles()){
+            addWordsFromFile(f);
+        }
+    }
+    public int maxNumber(){
+        String common = "";
+        int highest = 0;
+        for (String s : map.keySet()){
+            if (map.get(s).size() > highest){
+                highest = map.get(s).size();
+                common = s;
+            }
+        }
+        System.out.println(common + highest);
+        return highest;        
+    }
+    public ArrayList<String> wordsInNumFiles(int number){
+        ArrayList array = new ArrayList<String>();
+        for (String s : map.keySet()){
+            if (map.get(s).size() == number){
+                array.add(s);
+                System.out.println(s);       
+    }
+    }
+    return array;
+    }
+    public void printFilesIn(String word){
+        if (map.containsKey(word)){
+            ArrayList<String> array = new ArrayList<String>(map.get(word));
+            for (String s : array){
+                System.out.println(s);
+            }
+        }
+    }
+    public void tester(){
+        buildWordFileMap();
+        System.out.println(maxNumber());
+        System.out.println(wordsInNumFiles(3));
+        printFilesIn("cats");
+    }
+}
