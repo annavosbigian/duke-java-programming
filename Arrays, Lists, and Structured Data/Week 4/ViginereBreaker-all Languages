@@ -1,0 +1,142 @@
+import java.util.*;
+import edu.duke.*;
+import java.io.*;
+
+public class VigenereBreaker {
+    public String sliceString(String message, int whichSlice, int totalSlices) {
+    //message = encrypted message
+    //which = index start
+    //total = key length
+    char[] charMess = message.toCharArray();
+    StringBuilder slice = new StringBuilder("");
+    for (int i = whichSlice; i< charMess.length; i+=totalSlices){
+        slice.append(charMess[i]);
+    }   
+        //return every totalslice-th char
+        return slice.toString();
+    }
+
+    public int[] tryKeyLength(String encrypted, int klength, char mostCommon) {
+        int[] key = new int[klength];
+        //use CaesarCracker
+        //use sliceString
+        for (int i = 0; i<klength; i++){
+        String slice = sliceString(encrypted, i, klength);
+        CaesarCracker crack = new CaesarCracker(mostCommon);
+        key[i] = crack.getKey(slice);
+        }
+        return key;
+    }
+
+    public HashSet<String> readDictionary(FileResource fr){
+    //make hash of strings
+    HashSet<String> hash = new HashSet<String>();
+    //read each word
+    String file = fr.toString();
+    for (String word : file.split("\\W")){
+    //convert line to lowercase
+    //put line into hashset
+        hash.add(word.toLowerCase());
+    }
+
+    //return hashset with words in a dictionary
+    return hash;
+    }
+    
+    public int countWords(String message, HashSet<String> dictionary){
+        int i = 0;
+        //split message into words                
+        for (String word : message.split("\\W")){
+        //convert to lower
+        //iterate over words to see how many are real
+        if (dictionary.contains(word.toLowerCase())){
+            i++;
+        }
+    }
+        //return count of valid words
+        return i;
+    }
+    
+    public String breakForLanguage(String encrypted, HashSet<String> dictionary){
+    int dictWords = 0;
+    String decrypted = "";
+    char ch = mostCommonCharIn(dictionary);
+    //try all key lengths from 1-100 using tryKetLength
+    for (int i = 1; i<=100; i++){
+    //find best decryption
+    int[] test = tryKeyLength(encrypted, i, ch);
+    VigenereCipher vc = new VigenereCipher(test);
+    String testString = vc.decrypt(encrypted);
+    int matches = countWords(testString, dictionary);
+    //determine decryption with largest count
+    if (matches > dictWords){
+        dictWords = matches;
+        decrypted = testString;
+    }
+    //return that String decryption
+    }
+    return decrypted;
+    }
+    
+    public char mostCommonCharIn(HashSet<String> dictionary){
+    String alph = "abcdefghijklmnopqrstuvwxyz";
+    HashMap<Character, Integer> alphMap = new HashMap<Character, Integer>();
+    int common = 0;
+    char mostCommon = 'a';
+    for (String word : dictionary){
+        for (int i = 0; i<word.length(); i++){
+            char ch = word.charAt(i);
+            if (alphMap.containsKey(ch)){
+                alphMap.put(ch, alphMap.get(ch)+1);
+            }
+            else{
+                alphMap.put(ch, 1);
+            }
+        }
+    }
+    for (char ch : alphMap.keySet()) {
+        int i = alphMap.get(ch);
+        if (i>common){
+            common = i;
+            mostCommon = ch;   
+        }
+    }
+    return mostCommon;
+    }
+    public String breakForAllLangs(String encrypted, HashMap<String, HashSet<String>> languages){
+       HashMap<String, Integer> languageData = new HashMap<String, Integer>();
+       String language = "";
+       int mostWords = 0;
+       //break for each language
+       //see which gives the best results       
+       //iterate over languages.keySet() to get name of lang
+       for (String country : languages.keySet()){
+       //use .get() to look up corresponding dict
+       HashSet<String> dict = languages.get(country);
+       //use breakForLanguage & countWords
+       String decrypted = breakForLanguage(encrypted, dict);
+       int count = countWords(decrypted, dict);
+       if (count > mostWords){
+           mostWords = count;
+           language = country;
+       }
+       //return message & Language
+    }
+    return breakForLanguage(encrypted, languages.get(language)) + language;
+    }
+
+    public void breakVigenere () {
+        //WRITE YOUR CODE HERE
+        HashMap<String, HashSet<String>> languages = new HashMap<String, HashSet<String>>();
+        DirectoryResource dr = new DirectoryResource();
+            for (File f : dr.selectedFiles()) {
+                FileResource fr = new FileResource(f);
+                String language = f.toString();
+                languages.put(language, readDictionary(fr));
+            }
+        URLResource ur = new URLResource("http://www.dukelearntoprogram.com/java/athens_keyflute.txt");
+        String encrypted = ur.asString();
+        String decrypted = breakForAllLangs(encrypted, languages);
+        System.out.println(decrypted);
+        }
+    }
